@@ -1,0 +1,39 @@
+{% extends 'products/base.html' %}
+{% load static %}
+
+{% block title %}О нас — DriveRN{% endblock %}
+
+{% block extra_css %}<link href="{% static 'css/products.css' %}?v=5" rel="stylesheet">{% endblock %}
+
+{% block content %}
+
+<div class="section-title">
+    <h2>О компании</h2>
+    <p>DriveRN — сервис краткосрочной аренды автомобилей</p>
+</div>
+
+<div class="about">
+    <div class="about-block">
+        <h3><i class="fas fa-briefcase"></i> Кто мы</h3>
+        <p>Мы сдаём автомобили в аренду с 2018 года. На парке из 120 машин работаем в Москве и
+            ближайшем Подмосковье. Каждый автомобиль проходит предвыездную проверку и обслуживание
+            по регламенту дилера.</p>
+    </div>
+    <div class="about-block">
+        <h3><i class="fas fa-shield-halved"></i> Условия аренды</h3>
+        <p>Для бронирования нужен паспорт и водительское удостоверение с водительским стажем от 1 года.
+            Залог вносится на карту и возвращается после сдачи автомобиля. Аренда считается по
+            суткам, оплата — при получении машины.</p>
+    </div>
+    <div class="about-block">
+        <h3><i class="fas fa-phone-alt"></i> Контакты</h3>
+        <p>
+            <i class="fas fa-phone"></i> +7 900 000-00-00<br>
+            <i class="fas fa-envelope"></i> info@drivern.ru<br>
+            <i class="fas fa-map-marker-alt"></i> Рязань, ул. Кальное, 1<br>
+            <i class="fas fa-clock"></i> Ежедневно с 9:00 до 21:00
+        </p>
+    </div>
+</div>
+
+{% endblock %}

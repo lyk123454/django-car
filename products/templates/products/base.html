@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}DriveRN — аренда машин{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="{% static 'css/base.css' %}?v=7" rel="stylesheet">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<header class="navbar">
+    <a class="logo" href="{% url 'products:index' %}">
+        <span class="logo-badge"><i class="fas fa-gauge-high"></i></span>
+        <span class="logo-text">
+            <span class="logo-name">Drive<span class="logo-accent">RN</span></span>
+            <span class="logo-tag">каршеринг</span>
+        </span>
+    </a>
+
+    <button class="hamburger" id="hamburgerBtn" aria-label="Открыть меню">
+        <span></span><span></span><span></span>
+    </button>
+
+    <ul class="nav-links" id="navLinks">
+        <li><a href="{% url 'products:index' %}" class="{% if request.resolver_match.url_name == 'index' %}active{% endif %}"><i class="fas fa-home"></i> Главная</a></li>
+        <li><a href="{% url 'products:cars' %}" class="{% if 'cars' in request.resolver_match.url_name %}active{% endif %}"><i class="fas fa-car"></i> Автомобили</a></li>
+        <li><a href="{% url 'products:my_orders' %}" class="{% if 'order' in request.resolver_match.url_name %}active{% endif %}"><i class="fas fa-calendar-check"></i> Мои заказы</a></li>
+        <li><a href="{% url 'products:terms' %}" class="{% if request.resolver_match.url_name == 'terms' %}active{% endif %}"><i class="fas fa-file-signature"></i> Условия аренды</a></li>
+        <li><a href="{% url 'products:useful' %}" class="{% if request.resolver_match.url_name == 'useful' %}active{% endif %}"><i class="fas fa-lightbulb"></i> Полезное</a></li>
+        <li><a href="{% url 'products:contacts' %}" class="{% if request.resolver_match.url_name == 'contacts' %}active{% endif %}"><i class="fas fa-phone-alt"></i> Контакты</a></li>
+        <li><a href="{% url 'products:about' %}" class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}"><i class="fas fa-info-circle"></i> О нас</a></li>
+        {% if user.is_authenticated %}
+            <li><a href="{% url 'users:profile' %}" class="{% if request.resolver_match.url_name == 'profile' %}active{% endif %}"><i class="fas fa-user"></i> {{ user.username }}</a></li>
+            <li>
+                <form action="{% url 'users:logout' %}" method="post" class="logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-btn"><i class="fas fa-sign-out-alt"></i> Выйти</button>
+                </form>
+            </li>
+        {% else %}
+            <li><a href="{% url 'users:login' %}"><i class="fas fa-sign-in-alt"></i> Войти</a></li>
+            <li><a href="{% url 'users:register' %}" class="btn-book"><i class="fas fa-user-plus"></i> Регистрация</a></li>
+        {% endif %}
+    </ul>
+
+    <a href="{% url 'products:my_orders' %}" class="nav-cart" title="Мои заказы" aria-label="Мои заказы">
+        <i class="fas fa-shopping-cart"></i>
+    </a>
+</header>
+
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags|default:'info' }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<main class="page">
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+    <div class="footer-inner">
+        <div>
+            <div class="footer-logo"><i class="fas fa-car-side"></i> DriveRN</div>
+            <p>Аренда и каршеринг автомобилей в вашем городе</p>
+        </div>
+        <div>
+            <h4>Разделы</h4>
+            <a href="{% url 'products:index' %}">Главная</a>
+            <a href="{% url 'products:cars' %}">Автомобили</a>
+            <a href="{% url 'products:my_orders' %}">Мои заказы</a>
+            <a href="{% url 'products:about' %}">О нас</a>
+            <a href="{% url 'products:terms' %}">Условия аренды</a>
+            <a href="{% url 'products:useful' %}">Полезное</a>
+            <a href="{% url 'products:contacts' %}">Контакты</a>
+        </div>
+        <div>
+            <h4>Контакты</h4>
+            <p><i class="fas fa-phone-alt"></i> +7 900 000-00-00</p>
+            <p><i class="fas fa-envelope"></i> <a href="mailto:info@drivern.ru">info@drivern.ru</a></p>
+            <p><i class="fas fa-map-marker-alt"></i> Рязань, ул. Кальное, 1</p>
+            <p><i class="fas fa-clock"></i> Ежедневно 9:00 — 21:00</p>
+        </div>
+    </div>
+    <div class="footer-bottom">&copy; 2026 DriveRN. Все права защищены.</div>
+</footer>
+
+<script>
+    (function () {
+        const btn = document.getElementById('hamburgerBtn');
+        const links = document.getElementById('navLinks');
+        if (btn && links) {
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                links.classList.toggle('open');
+            });
+        }
+    })();
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

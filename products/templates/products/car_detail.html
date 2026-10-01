@@ -1,0 +1,82 @@
+{% extends 'products/base.html' %}
+{% load static %}
+
+{% block title %}{{ car.brand }} {{ car.model }} — DriveRN{% endblock %}
+
+{% block extra_css %}<link href="{% static 'css/products.css' %}?v=5" rel="stylesheet">{% endblock %}
+
+{% block content %}
+
+<div class="breadcrumbs">
+    <a href="{% url 'products:index' %}">Главная</a> /
+    <a href="{% url 'products:cars' %}">Автомобили</a> /
+    <a href="{{ car.category.get_absolute_url }}">{{ car.category.name }}</a> /
+    {{ car.brand }} {{ car.model }}
+</div>
+
+<div class="car-detail">
+    <div class="car-detail-photo">
+        {% if car.image %}
+            <img src="{{ car.image.url }}" alt="{{ car }}">
+        {% else %}
+            <i class="fas fa-car"></i>
+        {% endif %}
+    </div>
+
+    <div class="car-detail-info">
+        <h1>{{ car.brand }} {{ car.model }}</h1>
+        <p class="car-detail-sub">{{ car.category.name }} · {{ car.year }} г.в.</p>
+        <p class="car-detail-price">{{ car.price_per_day }} ₽ <small>/ сутки</small></p>
+
+        <ul class="car-detail-specs">
+            <li><i class="fas fa-users"></i> Мест: <strong>{{ car.seats }}</strong></li>
+            <li><i class="fas fa-gear"></i> Коробка: <strong>{{ car.get_transmission_display }}</strong></li>
+            <li><i class="fas fa-gas-pump"></i> Топливо: <strong>{{ car.get_fuel_type_display }}</strong></li>
+            <li><i class="fas fa-shield-halved"></i> Залог: <strong>{{ car.deposit }} ₽</strong></li>
+        </ul>
+
+        <p class="car-status {% if car.is_available %}ok{% else %}busy{% endif %}">
+            <i class="fas {% if car.is_available %}fa-circle-check{% else %}fa-circle-xmark{% endif %}"></i>
+            {% if car.is_available %}Автомобиль свободен{% else %}Автомобиль сейчас в аренде{% endif %}
+        </p>
+
+        {% if car.description %}
+            <h2 class="car-detail-h">Описание</h2>
+            <p class="car-detail-text">{{ car.description|linebreaksbr }}</p>
+        {% endif %}
+    </div>
+
+    <div class="booking-card" id="booking">
+        <h2><i class="fas fa-calendar-check"></i> Бронирование</h2>
+        {% if car.is_available %}
+            <form method="post" action="{% url 'products:create_order' car.slug %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary btn-block" {% if not user.is_authenticated %}onclick="window.location.href='{% url 'users:login' %}';return false;"{% endif %}>
+                    Забронировать
+                </button>
+            </form>
+            {% if not user.is_authenticated %}
+                <p class="help-text">Чтобы забронировать, войдите или зарегистрируйтесь.</p>
+            {% endif %}
+        {% else %}
+            <p class="car-status busy">Этот автомобиль сейчас занят, выберите другой.</p>
+            <a href="{{ car.category.get_absolute_url }}" class="btn btn-outline btn-block">Смотреть похожие</a>
+        {% endif %}
+    </div>
+</div>
+
+{% if similar_cars %}
+    <section class="section">
+        <div class="section-title">
+            <h2>Похожие автомобили</h2>
+        </div>
+        <div class="cars-grid">
+            {% for item in similar_cars %}
+                {% include 'products/includes/car_card.html' with car=item %}
+            {% endfor %}
+        </div>
+    </section>
+{% endif %}
+
+{% endblock %}

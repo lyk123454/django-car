@@ -1,0 +1,268 @@
+.hero {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: calc(100vh - 72px);
+    padding: 4rem 3rem;
+    margin-bottom: 3rem;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #e9eef4;
+    margin-bottom: 1rem;
+    line-height: 1.15;
+    text-shadow: 0 3px 18px rgba(0, 0, 0, 0.55);
+}
+
+.hero h1 i {
+    color: var(--yellow);
+    margin-right: 10px;
+}
+
+.hero-text > p {
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.6;
+    color: #dde5ee;
+    margin-bottom: 1.6rem;
+    max-width: 520px;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.65);
+}
+
+.hero-actions {
+    display: flex;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.hero-phone {
+    color: var(--yellow);
+    font-weight: 700;
+    font-size: 1.05rem;
+    text-decoration: none;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.hero-phone i {
+    margin-right: 6px;
+}
+
+.hero-phone:hover {
+    color: #ffd93b;
+    text-decoration: underline;
+}
+
+.hero-stats {
+    display: flex;
+    gap: 2.5rem;
+    margin-top: 2.2rem;
+}
+
+.hero-stats div {
+    display: flex;
+    flex-direction: column;
+}
+
+.hero-stats strong {
+    font-size: 1.6rem;
+    color: var(--yellow);
+}
+
+.hero-stats span {
+    font-size: 0.85rem;
+    color: #eaf2fa;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.hero-image {
+    display: none;
+}
+
+
+.section {
+    margin-bottom: 3.5rem;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1.2rem;
+}
+
+.category-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 1.8rem 1rem;
+    text-align: center;
+    text-decoration: none;
+    color: var(--navy);
+    box-shadow: 0 4px 14px rgba(15, 37, 59, 0.08);
+    transition: 0.25s;
+}
+
+.category-card i {
+    font-size: 2.2rem;
+    color: var(--yellow);
+    margin-bottom: 0.8rem;
+    display: block;
+}
+
+.category-card span {
+    font-weight: 600;
+}
+
+.category-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 22px rgba(15, 37, 59, 0.15);
+}
+
+.steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+.step {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    box-shadow: 0 4px 14px rgba(15, 37, 59, 0.08);
+}
+
+.step i {
+    font-size: 2rem;
+    color: var(--yellow-dark);
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.step h3 {
+    color: var(--navy);
+    margin-bottom: 0.6rem;
+}
+
+.step p {
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.section-more {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.cta {
+    background: var(--navy);
+    color: #fff;
+    border-radius: 20px;
+    padding: 2.5rem;
+    text-align: center;
+}
+
+.cta h2 {
+    font-size: 1.8rem;
+    margin-bottom: 0.6rem;
+}
+
+.cta p {
+    color: #d5e1ec;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 900px) {
+    .hero {
+        padding: 2.5rem 1.5rem;
+        text-align: center;
+        min-height: auto;
+    }
+
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .hero-text > p {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-actions,
+    .hero-stats {
+        justify-content: center;
+    }
+}
+
+/* ---------- Карусель коллекционных ---------- */
+.collector-carousel {
+    position: relative;
+}
+
+.collector-track {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding: 0.5rem 0.25rem 1rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.collector-track::-webkit-scrollbar {
+    display: none;
+}
+
+.collector-track .car-card {
+    flex: 0 0 calc((100% - 3rem) / 3);
+    min-width: 280px;
+    scroll-snap-align: start;
+}
+
+.collector-nav {
+    position: absolute;
+    top: 45%;
+    transform: translateY(-50%);
+    z-index: 5;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: rgba(26, 26, 30, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s ease;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.collector-nav:hover {
+    background: var(--yellow);
+    color: #1a1a1e;
+    border-color: var(--yellow);
+}
+
+.collector-nav.prev {
+    left: -14px;
+}
+
+.collector-nav.next {
+    right: -14px;
+}
+
+@media (max-width: 900px) {
+    .collector-track .car-card {
+        flex-basis: calc(100% - 12px);
+        min-width: 0;
+    }
+
+    .collector-nav {
+        display: none;
+    }
+}
