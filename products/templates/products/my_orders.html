@@ -1,0 +1,67 @@
+{% extends 'products/base.html' %}
+{% load static %}
+
+{% block title %}Мои заказы — DriveRN{% endblock %}
+
+{% block extra_css %}<link href="{% static 'css/products.css' %}?v=5" rel="stylesheet">{% endblock %}
+
+{% block content %}
+
+<div class="section-title">
+    <h2>Мои заказы</h2>
+    <p>История аренды и текущие бронирования</p>
+</div>
+
+{% if orders %}
+    <div class="orders">
+        {% for order in orders %}
+            <div class="order-card">
+                <div class="order-head">
+                    <span class="order-number">Заказ #{{ order.id }}</span>
+                    <span class="status status-{{ order.status }}">{{ order.get_status_display }}</span>
+                    {% if order.is_paid %}<span class="status status-paid">Оплачен</span>{% endif %}
+                </div>
+                <div class="order-body">
+                    <div class="order-car">
+                        {% if order.car.image %}
+                            <img src="{{ order.car.image.url }}" alt="{{ order.car }}">
+                        {% else %}
+                            <i class="fas fa-car"></i>
+                        {% endif %}
+                        <a href="{{ order.car.get_absolute_url }}">{{ order.car.brand }} {{ order.car.model }}</a>
+                    </div>
+                    <div class="order-dates">
+                        <p><i class="fas fa-calendar-day"></i> {{ order.start_date|date:"d.m.Y" }} — {{ order.end_date|date:"d.m.Y" }}</p>
+                        <p><i class="fas fa-hourglass-half"></i> {{ order.days }} {{ order.days|pluralize:"сутки,суток,суток" }}</p>
+                        <p><i class="fas fa-coins"></i> {{ order.total_price }} ₽</p>
+                    </div>
+                </div>
+                {% if order.comment %}
+                    <p class="order-comment"><i class="fas fa-comment"></i> {{ order.comment }}</p>
+                {% endif %}
+                <div class="order-foot">
+                    <span class="order-date">Создан: {{ order.created_at|date:"d.m.Y H:i" }}</span>
+                    <div class="order-actions">
+                        {% if order.is_active and not order.is_paid %}
+                            <a href="{% url 'products:pay_order' order.pk %}" class="btn btn-primary btn-sm"><i class="fas fa-credit-card"></i> Оплатить</a>
+                        {% endif %}
+                        {% if order.is_active %}
+                            <form method="post" action="{% url 'products:cancel_order' order.pk %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm">Отменить</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty">
+        <i class="fas fa-calendar-xmark"></i>
+        <p>У вас пока нет заказов.</p>
+        <a href="{% url 'products:cars' %}" class="btn btn-primary">Выбрать автомобиль</a>
+    </div>
+{% endif %}
+
+{% endblock %}

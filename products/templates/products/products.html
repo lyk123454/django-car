@@ -1,0 +1,69 @@
+{% extends 'products/base.html' %}
+{% load static %}
+
+{% block title %}Автомобили{% if category %} — {{ category.name }}{% endif %} — DriveRN{% endblock %}
+
+{% block extra_css %}<link href="{% static 'css/products.css' %}?v=5" rel="stylesheet">{% endblock %}
+
+{% block content %}
+
+<div class="section-title">
+    <h2>Автопарк</h2>
+    <p>Найдено {{ cars|length }}{% if page_obj %}{% if page_obj.paginator.num_pages > 1 %} (страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}){% endif %}{% endif %}</p>
+</div>
+
+<form method="get" class="filters">
+    <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Поиск: марка, модель, название">
+    <select name="transmission" class="form-control">
+        <option value="">Любая коробка</option>
+        {% for value, label in transmissions %}
+            <option value="{{ value }}" {% if value == selected_transmission %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+    </select>
+    <label class="checkbox">
+        <input type="checkbox" name="available" value="1" {% if only_available %}checked{% endif %}>
+        Только свободные
+    </label>
+    <button type="submit" class="btn btn-primary"><i class="fas fa-filter"></i> Применить</button>
+    <a href="{% url 'products:cars' %}" class="btn btn-outline">Сбросить</a>
+</form>
+
+<div class="categories-row">
+    <a class="chip {% if not category %}active{% endif %}" href="{% url 'products:cars' %}">Все</a>
+    {% for item in categories %}
+        <a class="chip {% if category.pk == item.pk %}active{% endif %}" href="{{ item.get_absolute_url }}">{{ item.name }}</a>
+    {% endfor %}
+</div>
+
+{% if cars %}
+    <div class="cars-grid">
+        {% for car in cars %}
+            {% include 'products/includes/car_card.html' %}
+        {% endfor %}
+    </div>
+
+    {% if page_obj.paginator.num_pages > 1 %}
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_transmission %}&transmission={{ selected_transmission }}{% endif %}{% if only_available %}&available=1{% endif %}">&laquo;</a>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+                {% if num == page_obj.number %}
+                    <span class="active">{{ num }}</span>
+                {% else %}
+                    <a href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}{% if selected_transmission %}&transmission={{ selected_transmission }}{% endif %}{% if only_available %}&available=1{% endif %}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_transmission %}&transmission={{ selected_transmission }}{% endif %}{% if only_available %}&available=1{% endif %}">&raquo;</a>
+            {% endif %}
+        </div>
+    {% endif %}
+{% else %}
+    <div class="empty">
+        <i class="fas fa-car-crash"></i>
+        <p>Автомобили не найдены. Попробуйте изменить фильтры.</p>
+    </div>
+{% endif %}
+
+{% endblock %}

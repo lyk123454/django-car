@@ -1,0 +1,136 @@
+{% extends 'products/base.html' %}
+{% load static %}
+
+{% block title %}DriveRN — аренда машин и каршеринг{% endblock %}
+
+{% block extra_css %}<link href="{% static 'css/index.css' %}?v=11" rel="stylesheet"><link href="{% static 'css/products.css' %}?v=5" rel="stylesheet">{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+    <div class="hero-text">
+        <h1><i class="fas fa-car"></i> Аренда и каршеринг авто</h1>
+        <p>Широкий парк автомобилей эконом-, бизнес- и премиум-класса.
+            Бронируйте онлайн за минуту, оплачивайте удобным способом и забирайте машину сразу.</p>
+        <div class="hero-actions">
+            <a href="{% url 'products:cars' %}" class="btn btn-primary"><i class="fas fa-car"></i> Смотреть авто</a>
+            {% if not user.is_authenticated %}
+                <a href="{% url 'users:register' %}" class="btn btn-outline"><i class="fas fa-user-plus"></i> Создать аккаунт</a>
+            {% else %}
+                <a href="{% url 'products:my_orders' %}" class="btn btn-outline"><i class="fas fa-calendar-check"></i> Мои заказы</a>
+            {% endif %}
+            <a href="tel:+79000000000" class="hero-phone"><i class="fas fa-phone"></i> +7 900 000-00-00</a>
+        </div>
+        <div class="hero-stats">
+            <div><strong>{{ featured_cars|length }}+</strong><span>автомобилей</span></div>
+            <div><strong>{{ categories|length }}</strong><span>категории</span></div>
+            <div><strong>24/7</strong><span>поддержка</span></div>
+        </div>
+    </div>
+</section>
+
+{% if categories %}
+    <section class="section">
+        <div class="section-title">
+            <h2>Категории авто</h2>
+            <p>Выберите класс автомобиля под вашу поездку</p>
+        </div>
+        <div class="category-grid">
+            {% for category in categories %}
+                <a class="category-card" href="{{ category.get_absolute_url }}">
+                    <i class="fas {{ category.icon }}"></i>
+                    <span>{{ category.name }}</span>
+                </a>
+            {% endfor %}
+        </div>
+    </section>
+{% endif %}
+
+{% if featured_cars %}
+    <section class="section">
+        <div class="section-title">
+            <h2>Популярные автомобили</h2>
+            <p>Самые востребованные модели этой недели</p>
+        </div>
+        <div class="cars-grid">
+            {% for car in featured_cars %}
+                {% include 'products/includes/car_card.html' %}
+            {% endfor %}
+        </div>
+        <div class="section-more">
+            <a href="{% url 'products:cars' %}" class="btn btn-outline">Весь автопарк</a>
+        </div>
+    </section>
+{% endif %}
+
+{% if collector_cars %}
+    <section class="section">
+        <div class="section-title">
+            <h2>Коллекционные автомобили</h2>
+            <p>Легенды под особые случаи — листайте карточки</p>
+        </div>
+        <div class="collector-carousel">
+            <button type="button" class="collector-nav prev" data-dir="-1" aria-label="Предыдущая машина">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="collector-track" id="collectorTrack">
+                {% for car in collector_cars %}
+                    {% include 'products/includes/car_card.html' %}
+                {% endfor %}
+            </div>
+            <button type="button" class="collector-nav next" data-dir="1" aria-label="Следующая машина">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </section>
+{% endif %}
+
+<section class="section">
+    <div class="section-title">
+        <h2>Как арендовать</h2>
+        <p>Три простых шага до поездки</p>
+    </div>
+    <div class="steps">
+        <div class="step">
+            <i class="fas fa-user-plus"></i>
+            <h3>Регистрация</h3>
+            <p>Создайте аккаунт и укажите телефон — он понадобится при получении авто.</p>
+        </div>
+        <div class="step">
+            <i class="fas fa-calendar-check"></i>
+            <h3>Бронирование</h3>
+            <p>Выберите автомобиль, даты начала и окончания аренды.</p>
+        </div>
+        <div class="step">
+            <i class="fas fa-key"></i>
+            <h3>Получение авто</h3>
+            <p>Приезжайте в офис с правами и документом. Оплата при получении.</p>
+        </div>
+    </div>
+</section>
+
+<section class="cta">
+    <h2>Нужен автомобиль сегодня?</h2>
+    <p>Оставь заявку — перезвоним в течение 15 минут и подберём машину.</p>
+    <a href="{% url 'products:cars' %}" class="btn btn-primary">Выбрать авто</a>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    (function () {
+        var track = document.getElementById('collectorTrack');
+        if (!track) return;
+        var buttons = document.querySelectorAll('.collector-nav');
+        buttons.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var card = track.querySelector('.car-card');
+                var gap = 24;
+                var step = card ? card.getBoundingClientRect().width + gap : 320;
+                track.scrollBy({left: step * parseInt(btn.dataset.dir, 10), behavior: 'smooth'});
+            });
+        });
+    })();
+</script>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'products/base.html' %}
+{% load static %}
+
+{% block title %}Профиль — DriveRN{% endblock %}
+
+{% block extra_css %}<link href="{% static 'css/profile.css' %}?v=4" rel="stylesheet">{% endblock %}
+
+{% block content %}
+
+<div class="profile">
+    <div class="profile-head">
+        <div class="profile-avatar"><i class="fas fa-user"></i></div>
+        <div>
+            <h1>{{ user.get_full_name|default:user.username }}</h1>
+            <p class="profile-sub">@{{ user.username }}{% if user.email %} · {{ user.email }}{% endif %}</p>
+        </div>
+        <a href="{% url 'products:my_orders' %}" class="btn btn-primary profile-cart-btn">
+            <i class="fas fa-shopping-cart"></i> Мои заказы
+        </a>
+    </div>
+
+    <div class="profile-stats">
+        <div><strong>{{ user.profile.orders_count }}</strong><span>заказов</span></div>
+        <div><strong>{{ user.profile.rented_days }}</strong><span>суток аренды</span></div>
+        <div><strong>{{ user.profile.spent_money }} ₽</strong><span>потрачено</span></div>
+    </div>
+
+    <div class="profile-body">
+        <div class="profile-form">
+            <h2>Данные профиля</h2>
+            <form method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {% if field.errors %}<div class="form-error">{{ field.errors }}</div>{% endif %}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

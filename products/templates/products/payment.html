@@ -1,0 +1,58 @@
+{% extends 'products/base.html' %}
+{% load static %}
+
+{% block title %}Оплата заказа — DriveRN{% endblock %}
+
+{% block extra_css %}<link href="{% static 'css/auth.css' %}?v=3" rel="stylesheet"><link href="{% static 'css/products.css' %}?v=5" rel="stylesheet">{% endblock %}
+
+{% block content %}
+
+<div class="auth-card pay-card">
+    <h1><i class="fas fa-credit-card"></i> Оплата заказа</h1>
+    <p class="auth-sub">Заказ #{{ order.id }} — {{ order.car.brand }} {{ order.car.model }}</p>
+
+    <div class="pay-summary">
+        <div><span>Период аренды</span><span>{{ order.start_date|date:"d.m.Y" }} — {{ order.end_date|date:"d.m.Y" }}</span></div>
+        <div><span>{{ order.days }} {{ order.days|pluralize:"сутки,суток,суток" }}</span><span>{{ order.total_price }} ₽</span></div>
+        <div class="pay-total"><span>К оплате</span><strong>{{ order.total_price }} ₽</strong></div>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <div class="form-nonfield">{{ form.non_field_errors }}</div>
+        {% endif %}
+        {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}<div class="form-error">{{ field.errors }}</div>{% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-lock"></i> Оплатить {{ order.total_price }} ₽</button>
+        <p class="pay-hint">Демонстрационная форма — данные карты никуда не отправляются и не сохраняются.</p>
+    </form>
+
+    <p class="auth-switch"><a href="{% url 'products:my_orders' %}"><i class="fas fa-arrow-left"></i> Вернуться к заказам</a></p>
+</div>
+
+<script>
+(function () {
+    var cn = document.getElementById('id_card_number');
+    if (cn) cn.addEventListener('input', function () {
+        var v = cn.value.replace(/\D/g, '').slice(0, 16);
+        cn.value = v.replace(/(\d{4})(?=\d)/g, '$1 ');
+    });
+    var ex = document.getElementById('id_expiry');
+    if (ex) ex.addEventListener('input', function () {
+        var v = ex.value.replace(/\D/g, '').slice(0, 4);
+        ex.value = v.length > 2 ? v.slice(0, 2) + '/' + v.slice(2) : v;
+    });
+    var cv = document.getElementById('id_cvv');
+    if (cv) cv.addEventListener('input', function () {
+        cv.value = cv.value.replace(/\D/g, '').slice(0, 3);
+    });
+})();
+</script>
+
+{% endblock %}

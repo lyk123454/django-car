@@ -1,0 +1,30 @@
+<article class="car-card">
+    <a href="{{ car.get_absolute_url }}" class="car-card-photo">
+        {% if car.image %}
+            <img src="{{ car.image.url }}" alt="{{ car }}">
+        {% else %}
+            <i class="fas fa-car"></i>
+        {% endif %}
+        {% if car.is_available %}
+            <span class="car-card-badge free">Свободен</span>
+        {% else %}
+            <span class="car-card-badge busy">Занят</span>
+        {% endif %}
+    </a>
+    <div class="car-card-body">
+        <div class="car-card-top">
+            <h3><a href="{{ car.get_absolute_url }}">{{ car.brand }} {{ car.model }}</a></h3>
+            <span class="car-card-price">{{ car.price_per_day }} ₽<small>/сутки</small></span>
+        </div>
+        <p class="car-card-category">{{ car.category.name }} · {{ car.year }}</p>
+        <ul class="car-card-specs">
+            <li><i class="fas fa-gear"></i> {{ car.get_transmission_display }}</li>
+            <li><i class="fas fa-gas-pump"></i> {{ car.get_fuel_type_display }}</li>
+            <li><i class="fas fa-users"></i> {{ car.seats }} мест</li>
+        </ul>
+        <div class="car-card-footer">
+            <a href="{{ car.get_absolute_url }}" class="btn btn-card">Подробнее</a>
+            <a href="{{ car.get_absolute_url }}#booking" class="btn btn-primary">Забронировать</a>
+        </div>
+    </div>
+</article>
